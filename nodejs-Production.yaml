@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: node6042-uploads
+  labels:
+    type: local
+spec:
+  storageClassName: node6042-uploads
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/ilay/xyz-nodejs-volume/UPLOADS
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node6042-uploads
+spec:
+  storageClassName: node6042-uploads
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: node6042-pv
+  labels:
+    type: local
+spec:
+  storageClassName: node6042-pv
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /home/ilay/xyz-nodejs-volume
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: node6042-pvc
+spec:
+  storageClassName: node6042-pv
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node6042
+spec:
+  selector:
+    app: node6042
+  ports:
+    - port: 6042
+      targetPort: 6042
+      nodePort: 32222
+  externalIPs:
+    - 83.229.71.19
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node6042
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node6042
+  template:
+    metadata:
+      labels:
+        app: node6042
+    spec:
+      nodeName: kubernetes-application
+      containers:
+        - name: node6042
+          image: portal:6042
+          ports:
+            - containerPort: 6042
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo-production:27017/rtg-portal
+          volumeMounts:
+            - name: node6042-pv
+              mountPath: /etc/letsencrypt
+            - name: node6042-uploads
+              mountPath: /opt/backend/uploads 
+      volumes:
+        - name: node6042-pv
+          persistentVolumeClaim:
+            claimName: node6042-pvc
+        - name: node6042-uploads
+          persistentVolumeClaim:
+            claimName: node6042-uploads
