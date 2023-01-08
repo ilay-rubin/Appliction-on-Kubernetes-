@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-production
+  labels:
+    type: local
+spec:
+  storageClassName: mysql-pv-production
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /ALL-Data/Production/rt-crm.com/MySql-8.0.18v
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc-production
+spec:
+  storageClassName: mysql-pv-production
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-production
+spec:
+  ports:
+  - port: 3306
+    targetPort: 3306
+    nodePort: 31306
+  selector:
+    app: mysql-production
+  type: NodePort
+  externalIPs:
+    - 83.229.71.19
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-production
+spec:
+  selector:
+    matchLabels:
+      app: mysql-production
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql-production
+    spec:
+      nodeName: kubernetes-db 
+      containers:
+      - image: mysql:8.0.18
+        name: mysql-pro
+        env:
+         - name: MYSQL_ROOT_PASSWORD
+           valueFrom:
+            secretKeyRef:
+             name: mysql-secret
+             key: root-password
+        ports:
+        - containerPort: 3306
+          name: mysql-pro
+        volumeMounts:
+        - name: mysql-pv-production
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-pv-production
+        persistentVolumeClaim:
+          claimName: mysql-pvc-production
