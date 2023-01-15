@@ -8,6 +8,7 @@ My project works with NodeJs, MySql, MongoDB.
 All data is saved on the data server to avoid overloading the server, and my app ran on the app server.
 
 1. MySql :
+
 This YAML file describes a Kubernetes configuration for deploying a MySQL database in a production environment. The configuration includes the following components:
 
 A PersistentVolume (PV) named "mysql-pv-production" which is used to store data on the cluster. The PV has a storage capacity of 10Gi and uses the "hostPath" provisioner to access data stored in the "/ALL-Data/Production/rt-crm.com/MySql-8.0.18v" directory.
@@ -20,7 +21,9 @@ A Deployment named "mysql-production" which creates a pod running a container ba
 
 Overall, this configuration creates a MySQL deployment that can persist data across pod restarts and can be accessed within the cluster via the service and also from outside the cluster via the external IP and NodePort.
 
+
 2. MongoDB : 
+
 This YAML file describes a Kubernetes configuration for deploying a MongoDB database in a production environment. The configuration includes the following components:
 
 A PersistentVolume (PV) named "mongo-pv-production" which is used to store data on the cluster. The PV has a storage capacity of 2Gi and uses the "hostPath" provisioner to access data stored in the "/ALL-Data/Production/rt-students.xyz/MongoDB-3.6.3v" directory.
@@ -33,7 +36,9 @@ A Deployment named "mongo-production" which creates a pod running a container ba
 
 Overall, this configuration creates a MongoDB deployment that can persist data across pod restarts and can be accessed within the cluster via the service.
 
-3. NodeJS : 
+
+3. NodeJS :
+ 
 This YAML file describes a Kubernetes configuration for deploying a node.js application on a cluster. The configuration includes the following components:
 
 Two PersistentVolumes (PVs) named "node6042-uploads" and "node6042-pv", which are used to store data on the cluster. Both PVs have a storage capacity of 1Gi and use the "hostPath" provisioner to access data stored in the "/home/ilay/xyz-nodejs-volume/UPLOADS" and "/home/ilay/xyz-nodejs-volume" directories respectively.
