@@ -1,4 +1,4 @@
-# Appliction-on-Kubernetes-
+# Appliction-on-Kubernetes
 In this project I have three servers:
 1. Kubernetes Cluster
 2. Application - node
