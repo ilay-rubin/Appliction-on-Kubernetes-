@@ -5,8 +5,8 @@ RUN mkdir -p /opt/backend
 WORKDIR /opt/backend
 COPY FS-portal/server /opt/backend/
 RUN npm install
-#RUN npm i axios
-#RUN npm i pdf-lib
-#RUN npm i fontkit
-#RUN npm i node-schedule
+RUN npm i axios
+RUN npm i pdf-lib
+RUN npm i fontkit
+RUN npm i node-schedule
 CMD ["npm","start"]
